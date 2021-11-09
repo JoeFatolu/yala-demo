@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 
 import More from "../assets/images/dropdown.svg";
+import Logo from "./logo";
 
 const validationSchema = yup.object({
 	name: yup
@@ -175,11 +176,8 @@ export function Header() {
 	return (
 		<HeaderStyled>
 			<h1 className="shop">Yala Credit Scrore Demo</h1>
-
-			<a
-				className="github"
-				href="https://github.com/stripe/stripe-payments-demo"
-			>
+			<Logo />
+			<a className="github" href="https://github.com/JoeFatolu/yala-demo.git">
 				View on GitHub
 			</a>
 		</HeaderStyled>
@@ -204,7 +202,7 @@ export function Main() {
 function Form() {
 	return (
 		<FormStyled>
-			<p class="instruction">
+			<p className="instruction">
 				<span>Complete</span>/<span id="generate">generate</span> your shipping
 				and payment details below
 			</p>
@@ -215,7 +213,7 @@ function Form() {
 						<span>BVN</span>
 						<input
 							name="bvn"
-							class="field"
+							className="field"
 							placeholder="Enter your bvn"
 							required
 						/>
@@ -257,7 +255,7 @@ function Form() {
 					</label>
 					<label className="select">
 						<span>Education</span>
-						<div class="field">
+						<div className="field">
 							<select name="edu">
 								<option value="AU">First Leaving</option>
 								<option value="AT">Secondary School</option>
@@ -266,9 +264,9 @@ function Form() {
 							</select>
 						</div>
 					</label>
-					<label class="select">
+					<label className="select">
 						<span>Emp. type</span>
-						<div class="field">
+						<div className="field">
 							<select name="emp">
 								<option value="AU">Civil Servant</option>
 								<option value="AT">Private</option>
@@ -276,9 +274,9 @@ function Form() {
 							</select>
 						</div>
 					</label>
-					<label class="select">
+					<label className="select">
 						<span>Year of Emp.</span>
-						<div class="field">
+						<div className="field">
 							<select name="yrsemp">
 								<option value="AU">&gt; 10</option>
 								<option value="AT">5 - 10</option>
@@ -289,9 +287,9 @@ function Form() {
 						</div>
 					</label>
 
-					<label class="select">
+					<label className="select">
 						<span>Rental Value</span>
-						<div class="field">
+						<div className="field">
 							<select name="rv">
 								<option value="AU">Ownership</option>
 								<option value="AT">Rental Apartment </option>
@@ -300,11 +298,11 @@ function Form() {
 					</label>
 					<label>
 						<span>Rent Amount</span>
-						<input name="ra" class="field" placeholder="100000.00" required />
+						<input name="ra" className="field" placeholder="100000.00" required />
 					</label>
 					<label className="select">
 						<span>Dependents</span>
-						<div class="field">
+						<div className="field">
 							<select name="dp">
 								<option value="AU">Yes</option>
 								<option value="AT">No</option>
@@ -313,7 +311,7 @@ function Form() {
 					</label>
 					<label className="select">
 						<span>Assets</span>
-						<div class="field ">
+						<div className="field ">
 							<select name="as">
 								<option value="AU">Real Estate</option>
 								<option value="AT">Vehicle</option>
