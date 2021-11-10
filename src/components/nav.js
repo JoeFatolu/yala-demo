@@ -233,7 +233,7 @@ function Form() {
 
 	async function handleSubmit(a) {
 		await axios
-			.post('http://localhost:3000/getcreditscore', a)
+			.post('https://yala-api.herokuapp.com/getcreditscore', a)
 			.then((res) => {
 				const data = res.data;
 				setResult(data);
