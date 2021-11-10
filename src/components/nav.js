@@ -1,17 +1,38 @@
-import React from "react";
-import styled from "styled-components";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import React from 'react';
+import styled from 'styled-components';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import axios from 'axios';
+import Modal from 'react-modal';
+import ReactSpeedometer from 'react-d3-speedometer';
+import More from '../assets/images/dropdown.svg';
+import Logo from './logo';
+import { useAuth } from '../hooks';
+import Button from '../components/Button';
 
-import More from "../assets/images/dropdown.svg";
-import Logo from "./logo";
+Modal.setAppElement('#root');
 
 const validationSchema = yup.object({
-	name: yup
-		.string("Enter your email || AccountNumber || User ID")
-		.required("name is required"),
-	password: yup.string("Enter your password").required("Password is required"),
+	bvn: yup.number().required(),
+	location: yup.string(),
+	education: yup.string(),
+	employment: yup.string(),
+	employmentYears: yup.string(),
+	dependents: yup.string(),
+	assets: yup.string(),
 });
+
+const ModalContent = styled.div`
+	display: flex;
+
+	.value {
+		display: flex;
+		height: 200px;
+		justify-content: center;
+		align-items: center;
+		font-size: 40px;
+	}
+`;
 
 const HeaderStyled = styled.header`
 	width: 100%;
@@ -98,8 +119,7 @@ const FormStyled = styled.form`
 	fieldset {
 		margin-bottom: 20px;
 		background: #fff;
-		box-shadow: 0 1px 3px 0 rgb(50 50 93 / 15%),
-			0 4px 6px 0 rgb(112 157 199 / 15%);
+		box-shadow: 0 1px 3px 0 rgb(50 50 93 / 15%), 0 4px 6px 0 rgb(112 157 199 / 15%);
 		border-radius: 4px;
 		border: none;
 		font-size: 0;
@@ -160,7 +180,7 @@ const FormStyled = styled.form`
 		}
 	}
 	fieldset .select::after {
-		content: "";
+		content: '';
 		position: absolute;
 		width: 9px;
 		height: 5px;
@@ -200,129 +220,229 @@ export function Main() {
 }
 
 function Form() {
+	const [modalIsOpen, setIsOpen] = React.useState(false);
+	const [result, setResult] = React.useState({});
+
+	function openModal() {
+		setIsOpen(true);
+	}
+
+	function closeModal() {
+		setIsOpen(false);
+	}
+
+	async function handleSubmit(a) {
+		await axios
+			.post('http://localhost:3000/getcreditscore', a)
+			.then((res) => {
+				const data = res.data;
+				setResult(data);
+				openModal();
+			})
+			.catch((res) => {
+				return {
+					data: {
+						success: false,
+						message: 'Something went wrong',
+					},
+				};
+			});
+	}
+
+	const api = useAuth(handleSubmit);
+
+	const form = useFormik({
+		validationSchema: validationSchema,
+		initialValues: {
+			bvn: '',
+			location: '',
+			education: '',
+			employment: '',
+			employmentYears: '',
+			dependents: '',
+			assets: '',
+		},
+		onSubmit: async (a) => {
+			// const data = useAuth()
+			api.request(a);
+		},
+	});
+
 	return (
-		<FormStyled>
+		<FormStyled onSubmit={form.handleSubmit}>
 			<p className="instruction">
-				<span>Complete</span>/<span id="generate">generate</span> your shipping
-				and payment details below
+				<span>Complete</span>/<span id="generate">generate</span> your shipping and payment details below
 			</p>
 			<section>
 				<h2>Shipping &amp; Billing Information</h2>
 				<fieldset>
 					<label>
 						<span>BVN</span>
-						<input
-							name="bvn"
-							className="field"
-							placeholder="Enter your bvn"
-							required
-						/>
+						<input name="bvn" value={form.values.bvn} onChange={form.handleChange} className="field" placeholder="Enter your bvn" required />
 					</label>
 
 					<label className="select">
 						<span>Location</span>
 						<div id="state" className="field ">
-							<select name="state">
-								<option value="AU">Lagos</option>
-								<option value="AT">Abuja</option>
+							<select name="location" value={form.values.location} onChange={form.handleChange}>
+								<option>-- Select option --</option>
+
+								<option value="LA">Lagos</option>
+								<option value="FE">Abuja</option>
 								<option value="BE">Rivers</option>
-								<option value="BR">Oyo</option>
-								<option value="CA">Delta</option>
-								<option value="CN">Anambra</option>
-								<option value="DK">Enugu</option>
-								<option value="FI">Ogun</option>
-								<option value="FR">Kaduna</option>
-								<option value="DE">Kano</option>
-								<option value="HK">Ondo</option>
-								<option value="IE">Osun</option>
-								<option value="IT">Imo</option>
-								<option value="JP">Ekiti</option>
-								<option value="LU">Cross River</option>
-								<option value="MY">Akwa Ibom</option>
-								<option value="MX">Abia</option>
-								<option value="NL">Edo</option>
-								<option value="NZ">Kogi</option>
-								<option value="NO">Nassarawa</option>
-								<option value="PL">Niger</option>
-								<option value="PT">Bayelsa</option>
-								<option value="SG">Ebonyi</option>
-								<option value="ES">Taraba</option>
-								<option value="SE">Katsina</option>
-								<option value="CH">Sokoto</option>
-								<option value="GB">Adamawa</option>
+								<option value="OY">Oyo</option>
+								<option value="DE">Delta</option>
+								<option value="AN">Anambra</option>
+								<option value="EN">Enugu</option>
+								<option value="OG">Ogun</option>
+								<option value="KD">Kaduna</option>
+								<option value="KN">Kano</option>
+								<option value="ON">Ondo</option>
+								<option value="OS">Osun</option>
+								<option value="IM">Imo</option>
+								<option value="EK">Ekiti</option>
+								<option value="CR">Cross River</option>
+								<option value="AK">Akwa Ibom</option>
+								<option value="AB">Abia</option>
+								<option value="ED">Edo</option>
+								<option value="Ek">Kogi</option>
+								<option value="NA">Nassarawa</option>
+								<option value="NI">Niger</option>
+								<option value="BY">Bayelsa</option>
+								<option value="EB">Ebonyi</option>
+								<option value="TA">Taraba</option>
+								<option value="KT">Katsina</option>
+								<option value="SO">Sokoto</option>
+								<option value="GO">Adamawa</option>
 							</select>
 						</div>
 					</label>
 					<label className="select">
 						<span>Education</span>
 						<div className="field">
-							<select name="edu">
-								<option value="AU">First Leaving</option>
-								<option value="AT">Secondary School</option>
-								<option value="BE">Grad</option>
-								<option value="BR">Post Grad</option>
+							<select name="education" value={form.values.education} onChange={form.handleChange}>
+								<option>-- Select option --</option>
+								<option value="FL">First Leaving</option>
+								<option value="SC">Secondary School</option>
+								<option value="GD">Grad</option>
+								<option value="PG">Post Grad</option>
 							</select>
 						</div>
 					</label>
 					<label className="select">
 						<span>Emp. type</span>
 						<div className="field">
-							<select name="emp">
-								<option value="AU">Civil Servant</option>
-								<option value="AT">Private</option>
-								<option value="BE">Self Employed</option>
+							<select name="employment" value={form.values.employment} onChange={form.handleChange}>
+								<option>-- Select option --</option>
+
+								<option value="CS">Civil Servant</option>
+								<option value="PR">Private</option>
+								<option value="SE">Self Employed</option>
 							</select>
 						</div>
 					</label>
-					<label className="select">
+					<label className="employmentYears" value={form.values.employmentYears} onChange={form.handleChange}>
 						<span>Year of Emp.</span>
 						<div className="field">
-							<select name="yrsemp">
-								<option value="AU">&gt; 10</option>
-								<option value="AT">5 - 10</option>
-								<option value="BE">2 - 5</option>
-								<option value="BR">1 - 2</option>
-								<option value="BR">&lt; 1</option>
+							<select name="employmentYears" value={form.values.employmentYears} onChange={form.handleChange}>
+								<option>-- Select option --</option>
+
+								<option value="001">&gt; 10</option>
+								<option value="002">5 - 10</option>
+								<option value="003">2 - 5</option>
+								<option value="004">1 - 2</option>
+								<option value="005">&lt; 1</option>
 							</select>
 						</div>
 					</label>
 
-					<label className="select">
-						<span>Rental Value</span>
-						<div className="field">
-							<select name="rv">
-								<option value="AU">Ownership</option>
-								<option value="AT">Rental Apartment </option>
-							</select>
-						</div>
-					</label>
-					<label>
-						<span>Rent Amount</span>
-						<input name="ra" className="field" placeholder="100000.00" required />
-					</label>
-					<label className="select">
+					<label className="dependents">
 						<span>Dependents</span>
 						<div className="field">
-							<select name="dp">
-								<option value="AU">Yes</option>
-								<option value="AT">No</option>
+							<select name="dependents" value={form.values.dependents} onChange={form.handleChange}>
+								<option>-- Select option --</option>
+								<option value={true}>Yes</option>
+								<option value={false}>No</option>
 							</select>
 						</div>
 					</label>
-					<label className="select">
+
+					<label className="assets" value={form.values.assets} onChange={form.handleChange}>
 						<span>Assets</span>
 						<div className="field ">
-							<select name="as">
-								<option value="AU">Real Estate</option>
-								<option value="AT">Vehicle</option>
-								<option value="BE">Furniture/Gadgets/Electronics</option>
+							<select name="assets" value={form.values.assets} onChange={form.handleChange}>
+								<option>-- Select option --</option>
+
+								<option value="RE">Real Estate</option>
+								<option value="VE">Vehicle</option>
+								<option value="FGE">Furniture/Gadgets/Electronics</option>
 							</select>
 						</div>
 					</label>
 				</fieldset>
 			</section>
 
-			<button>Get Credit History</button>
+			<Button isLoading={api.loading} type="submit">
+				Get Credit History
+			</Button>
+
+			<Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal" ariaHideApp={false}>
+				<ModalContent>
+					{result.data?.creditScore && (
+						<div
+							style={{
+								width: '500px',
+								height: '300px',
+							}}
+						>
+							<ReactSpeedometer
+								fluidWidth={true}
+								minValue={0}
+								maxValue={100}
+								width={500}
+								needleHeightRatio={0.7}
+								value={result.data.creditScore}
+								currentValueText="Credit Score"
+								customSegmentLabels={[
+									{
+										text: 'Very Bad',
+										position: 'INSIDE',
+										color: '#555',
+									},
+									{
+										text: 'Bad',
+										position: 'INSIDE',
+										color: '#555',
+									},
+									{
+										text: 'Ok',
+										position: 'INSIDE',
+										color: '#555',
+										fontSize: '19px',
+									},
+									{
+										text: 'Good',
+										position: 'INSIDE',
+										color: '#555',
+									},
+									{
+										text: 'Very Good',
+										position: 'INSIDE',
+										color: '#555',
+									},
+								]}
+								ringWidth={47}
+								needleTransition="easeElastic"
+								needleColor={'#90f2ff'}
+								textColor={'#d8dee9'}
+							/>
+						</div>
+					)}
+
+					{!result.data?.creditScore && <div className="value">{result.data}</div>}
+					<div className="value">Your credit score is {result.data?.creditScore}</div>
+				</ModalContent>
+			</Modal>
 		</FormStyled>
 	);
 }
