@@ -38,7 +38,7 @@ const HeaderStyled = styled.header`
 	width: 100%;
 	height: 80px;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	border-bottom: 1px solid #f3f3ff;
 	padding: 30px;
@@ -195,11 +195,7 @@ const FormStyled = styled.form`
 export function Header() {
 	return (
 		<HeaderStyled>
-			<h1 className="shop">Yala Credit Scrore Demo</h1>
 			<Logo />
-			<a className="github" href="https://github.com/JoeFatolu/yala-demo.git">
-				View on GitHub
-			</a>
 		</HeaderStyled>
 	);
 }
