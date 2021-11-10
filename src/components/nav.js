@@ -24,17 +24,17 @@ Modal.defaultStyles.content = {
 	outline: 'none',
 	padding: '20px',
 };
-Modal.defaultStyles.overlay =  {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(255, 255, 255, 0.75)",
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center"
-  };
+Modal.defaultStyles.overlay = {
+	position: 'fixed',
+	top: 0,
+	left: 0,
+	right: 0,
+	bottom: 0,
+	backgroundColor: 'rgba(255, 255, 255, 0.75)',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+};
 
 const validationSchema = yup.object({
 	bvn: yup.number().required(),
@@ -293,11 +293,9 @@ function Form() {
 
 	return (
 		<FormStyled onSubmit={form.handleSubmit}>
-			<p className="instruction">
-				<span>Complete</span>/<span id="generate">generate</span> your shipping and payment details below
-			</p>
+			<p className="instruction">Welcome to Yela Credit Report Service </p>
 			<section>
-				<h2>Shipping &amp; Billing Information</h2>
+				<h2>Fill the information below to get your credit report </h2>
 				<fieldset>
 					<label>
 						<span>BVN</span>
@@ -406,7 +404,7 @@ function Form() {
 			</section>
 
 			<Button isLoading={api.loading} type="submit">
-				Get Credit History
+				Get Credit Report
 			</Button>
 
 			<Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal" ariaHideApp={false}>
