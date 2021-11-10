@@ -11,6 +11,30 @@ import { useAuth } from '../hooks';
 import Button from '../components/Button';
 
 Modal.setAppElement('#root');
+Modal.defaultStyles.content = {
+	top: '40px',
+	left: '40px',
+	right: '40px',
+	bottom: '40px',
+	border: '1px solid #ccc',
+	background: '#fff',
+	overflow: 'auto',
+	WebkitOverflowScrolling: 'touch',
+	borderRadius: '4px',
+	outline: 'none',
+	padding: '20px',
+};
+Modal.defaultStyles.overlay =  {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.75)",
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center"
+  };
 
 const validationSchema = yup.object({
 	bvn: yup.number().required(),
@@ -24,13 +48,16 @@ const validationSchema = yup.object({
 
 const ModalContent = styled.div`
 	display: flex;
-
+	flex-direction: column;
+	max-width: 500px;
+	width: 100%;
+	margin: 0 auto;
+	align-items: center;
 	.value {
 		display: flex;
-		height: 200px;
 		justify-content: center;
 		align-items: center;
-		font-size: 40px;
+		font-size: 50px;
 	}
 `;
 
@@ -384,7 +411,7 @@ function Form() {
 
 			<Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal" ariaHideApp={false}>
 				<ModalContent>
-					{result.data?.creditScore && (
+					{result.data && typeof result.data.creditScore === 'number' && (
 						<div
 							style={{
 								width: '500px',
@@ -435,8 +462,8 @@ function Form() {
 						</div>
 					)}
 
-					{!result.data?.creditScore && <div className="value">{result.data}</div>}
-					<div className="value">Your credit score is {result.data?.creditScore}</div>
+					{result.data && typeof result.data.creditScore !== 'number' && <div className="value">{result.data.creditScore}</div>}
+					{result.data && typeof result.data.creditScore === 'number' && <div className="value">{parseInt(result.data.creditScore)}</div>}
 				</ModalContent>
 			</Modal>
 		</FormStyled>
